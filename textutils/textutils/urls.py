@@ -19,20 +19,8 @@ from . import views
 
 
 # (Code for video #6)
-# urlpatterns = [
-#     path('admin/', admin.site.urls),
-#     path('', views.index, name='index'),
-#     path('about', views.about, name='about'),
-#     path('cont_disp', views.cont_disp, name='cont-disp'),
-
-# ]
-
 urlpatterns = [
-    path('', views.home, name='home'),
-    path('rempunc', views.remPunc, name='rem-punc'),
-    path('capfirst', views.capFirst, name='cap-first'),
-    path('nlrem', views.newlineRem, name='newline-rem'),
-    path('sprem', views.spaceRem, name='sp-rem'),
-    path('charcount', views.charCount, name='char-count')
-
+    path('admin/', admin.site.urls),
+    path('', views.index, name='index'),
+    path('analyze', views.analyze, name='analyze'),
 ]
