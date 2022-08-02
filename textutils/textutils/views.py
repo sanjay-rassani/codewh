@@ -16,8 +16,10 @@ def index(request):
 def analyze(request):
     text = request.GET.get('text', 'default')
     removepunc = request.GET.get('removepunc', 'off')
+    fullcaps = request.GET.get('fullcaps', 'off')
     print(removepunc)
     print(text)
+    
     if removepunc == 'on':
         analyzed = ''
         punctuations = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
@@ -26,6 +28,15 @@ def analyze(request):
                 analyzed = analyzed + char
         params = {'purpose': 'Removed Punctuations', 'analyzed_text': analyzed}
         return render(request, 'textutils/analyze.html', params)
+    
+    elif(fullcaps == 'on'):
+        analyzed = ''
+        for char in text:
+            analyzed = analyzed + char.upper()
+
+        params = {'purpose': 'Changed to UPPERCASE', 'analyzed_text': analyzed}
+        return render(request, 'textutils/analyze.html', params)
+
     else:
         return HttpResponse('Error')
 
