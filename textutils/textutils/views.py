@@ -1,9 +1,5 @@
-from email.policy import default
-from ssl import Purpose
-from string import punctuation
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.test import TestCase
 
 # def cont_disp(request):
 #     file = open('one.txt','r')
@@ -16,14 +12,14 @@ def index(request):
 
 def analyze(request):
     # Get the text
-    text = request.GET.get('text', 'default')
+    text = request.POST.get('text', 'default')
 
     # Check checkbox values
-    removepunc = request.GET.get('removepunc', 'off')
-    fullcaps = request.GET.get('fullcaps', 'off')
-    newlineremover = request.GET.get('newlineremover', 'off')
-    extraspaceremover = request.GET.get('extraspaceremover', 'off')
-    charcounter = request.GET.get('charcounter', 'off')
+    removepunc = request.POST.get('removepunc', 'off')
+    fullcaps = request.POST.get('fullcaps', 'off')
+    newlineremover = request.POST.get('newlineremover', 'off')
+    extraspaceremover = request.POST.get('extraspaceremover', 'off')
+    charcounter = request.POST.get('charcounter', 'off')
     
     # Check with checkbox is on 
     if removepunc == 'on':
@@ -33,26 +29,29 @@ def analyze(request):
             if char not in punctuations:
                 analyzed = analyzed + char
         params = {'purpose': 'Removed Punctuations', 'analyzed_text': analyzed}
-        return render(request, 'textutils/analyze.html', params)
+        text = analyzed
+        # return render(request, 'textutils/analyze.html', params)
     
-    elif(fullcaps == 'on'):
+    if(fullcaps == 'on'):
         analyzed = ''
         for char in text:
             analyzed = analyzed + char.upper()
 
         params = {'purpose': 'Changed to UPPERCASE', 'analyzed_text': analyzed}
-        return render(request, 'textutils/analyze.html', params)
+        text = analyzed
+        # return render(request, 'textutils/analyze.html', params)
 
-    elif(newlineremover == 'on'):
+    if(newlineremover == 'on'):
         analyzed = ''
         for char in text:
-            if char != '\n':
+            if char != '\n' and char!='\r':
                 analyzed = analyzed + char
 
         params = {'purpose': 'Newlines removed', 'analyzed_text': analyzed}
-        return render(request, 'textutils/analyze.html', params)
+        text = analyzed
+        # return render(request, 'textutils/analyze.html', params)
 
-    elif(extraspaceremover == 'on'):
+    if(extraspaceremover == 'on'):
         analyzed = ''
         for index, char in enumerate(text):
             if text[index] == ' ' and text[index+1] == ' ':
@@ -61,17 +60,22 @@ def analyze(request):
                 analyzed = analyzed +char
 
         params = {'purpose': 'Extra Space Remover', 'analyzed_text': analyzed}
-        return render(request, 'textutils/analyze.html', params)
+        text = analyzed
+        # return render(request, 'textutils/analyze.html', params)
 
-    elif(charcounter =='on'):
+    if(charcounter =='on'):
         analyzed = str(len(text))
 
         params = {'purpose': 'Counted the chars', 'analyzed_text': analyzed}
-        return render(request, 'textutils/analyze.html', params)
-
-
-    else:
+        
+    if(removepunc!='on' and fullcaps!='on' and newlineremover!='on' and extraspaceremover!='on' and charcounter!='on'):
         return HttpResponse('Error')
+        
+    # else:
+    #     return HttpResponse('Error')
+
+    return render(request, 'textutils/analyze.html', params)
+
 
 # def capFirst(request):
 #     return HttpResponse('<h1>Capitalize First</h1> <a href="http://127.0.0.1:8000/">Back</a>')
